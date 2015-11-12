@@ -1,0 +1,91 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf130
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;}
+\paperw12240\paperh15840\margl1440\margr1440\vieww9000\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\b\fs24 \cf0 This project demonstrates issues with NSTokenFieldCell.
+\b0 \
+\
+(A) The first issue is that bindings don't propagate the value back to the bound object. To reproduce:\
+\
+1/ Run the program:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 {{\NeXTGraphic Pasted Graphic.tiff \width11840 \height9880
+}¬}\
+\
+2/ Click the + to add a row:\
+\
+{{\NeXTGraphic Pasted Graphic 1.tiff \width11840 \height9880
+}¬}\
+\
+3/ Edit the tags column:\
+\
+{{\NeXTGraphic Pasted Graphic 2.tiff \width11840 \height9880
+}¬}\
+\
+4/ Press enter to end editing:\
+\
+{{\NeXTGraphic Pasted Graphic 3.tiff \width11840 \height9880
+}¬}\
+\
+Outcome: The value for the column disappears and the row data is not updated.\
+\
+(B) Editing a field a second time causes the program to crash. To reproduce:\
+\
+1/ From the state above, simply double click the column a second time with the intention to edit the tags.\
+\
+Outcome: The application immediately crashes:\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f1\fs22 \cf0 \CocoaLigature0 * thread #1: tid = 0x6522e3, 0x00007fff8b7b7d5d libobjc.A.dylib`objc_msgSend + 29, queue = 'com.apple.main-thread', stop reason = EXC_BAD_ACCESS (code=1, address=0x40dedeadbec0)\
+    frame #0: 0x00007fff8b7b7d5d libobjc.A.dylib`objc_msgSend + 29\
+    frame #1: 0x00007fff9537088c AppKit`-[NSTokenAttachmentCell isEnabled] + 73\
+    frame #2: 0x00007fff95033648 AppKit`-[NSCell _textAttributes] + 50\
+    frame #3: 0x00007fff9503f65f AppKit`__NSGetStringAndAttributesFromTextCell + 414\
+    frame #4: 0x00007fff9503eeef AppKit`_NSGetTextCellBoundingRect + 135\
+    frame #5: 0x00007fff9503ed09 AppKit`-[NSCell cellSizeForBounds:] + 270\
+    frame #6: 0x00007fff9537050f AppKit`-[NSTokenAttachmentCell cellSizeForBounds:] + 145\
+    frame #7: 0x00007fff95370437 AppKit`-[NSTokenAttachmentCell cellFrameForTextContainer:proposedLineFragment:glyphPosition:characterIndex:] + 207\
+    frame #8: 0x00007fff92d26866 UIFoundation`-[NSATSGlyphStorage _resolvePositionalStakeGlyphsForLineFragment:lineFragmentRect:minPosition:maxPosition:maxLineFragmentWidth:breakHint:] + 1619\
+    frame #9: 0x00007fff92d2a10d UIFoundation`-[NSATSLineFragment layoutForStartingGlyphAtIndex:characterIndex:minPosition:maxPosition:lineFragmentRect:] + 640\
+    frame #10: 0x00007fff92d1fae8 UIFoundation`-[NSATSTypesetter _layoutLineFragmentStartingWithGlyphAtIndex:characterIndex:atPoint:renderingContext:] + 3418\
+    frame #11: 0x00007fff92d21c1e UIFoundation`-[NSATSTypesetter layoutParagraphAtPoint:] + 167\
+    frame #12: 0x00007fff92c6e40c UIFoundation`-[NSTypesetter _layoutGlyphsInLayoutManager:startingAtGlyphIndex:maxNumberOfLineFragments:maxCharacterIndex:nextGlyphIndex:nextCharacterIndex:] + 4189\
+    frame #13: 0x00007fff92c6fad1 UIFoundation`-[NSTypesetter layoutCharactersInRange:forLayoutManager:maximumNumberOfLineFragments:] + 245\
+    frame #14: 0x00007fff92d22a73 UIFoundation`-[NSATSTypesetter layoutCharactersInRange:forLayoutManager:maximumNumberOfLineFragments:] + 983\
+    frame #15: 0x00007fff92ceaf90 UIFoundation`-[NSLayoutManager(NSPrivate) _fillLayoutHoleForCharacterRange:desiredNumberOfLines:isSoft:] + 1158\
+    frame #16: 0x00007fff92cf494e UIFoundation`_NSFastFillAllLayoutHolesForGlyphRange + 1479\
+    frame #17: 0x00007fff92cf6c55 UIFoundation`-[NSLayoutManager(NSPrivate) _firstPassGlyphRangeForBoundingRect:inTextContainer:okToFillHoles:] + 299\
+    frame #18: 0x00007fff92cf78a1 UIFoundation`-[NSLayoutManager(NSPrivate) _glyphRangeForBoundingRect:inTextContainer:fast:okToFillHoles:] + 850\
+    frame #19: 0x00007fff92c110ce UIFoundation`-[NSLayoutManager glyphRangeForBoundingRect:inTextContainer:] + 79\
+    frame #20: 0x00007fff950c8141 AppKit`-[NSTextView setNeedsDisplayInRect:avoidAdditionalLayout:] + 1337\
+    frame #21: 0x00007fff950e8f09 AppKit`-[NSTextView setNeedsDisplayInRect:] + 58\
+    frame #22: 0x00007fff94fdd261 AppKit`-[NSView setNeedsDisplay:] + 81\
+    frame #23: 0x00007fff952d5855 AppKit`-[NSTextView(NSSharing) setBackgroundColor:] + 357\
+    frame #24: 0x00007fff950e8fa6 AppKit`-[NSTextFieldCell setUpFieldEditorAttributes:] + 149\
+    frame #25: 0x00007fff9537cb63 AppKit`-[NSTokenFieldCell setUpFieldEditorAttributes:] + 47\
+    frame #26: 0x00007fff950e856e AppKit`_NSEditTextCellWithOptions + 1449\
+    frame #27: 0x00007fff952ad1f9 AppKit`-[NSCell _selectOrEdit:inView:target:editor:event:start:end:] + 361\
+    frame #28: 0x00007fff950e7f06 AppKit`-[NSTextFieldCell _selectOrEdit:inView:target:editor:event:start:end:] + 460\
+    frame #29: 0x00007fff9537cac1 AppKit`-[NSTokenFieldCell _selectOrEdit:inView:target:editor:event:start:end:] + 161\
+    frame #30: 0x00007fff950e7d33 AppKit`-[NSCell selectWithFrame:inView:editor:delegate:start:length:] + 59\
+    frame #31: 0x00007fff957000ee AppKit`-[NSTableView _cellBasedEditColumn:row:withEvent:select:inView:] + 943\
+    frame #32: 0x00007fff957002ea AppKit`-[NSTableView editColumn:row:withEvent:select:] + 431\
+    frame #33: 0x00007fff952fb76c AppKit`-[NSTableView mouseDown:] + 6337\
+    frame #34: 0x00007fff957c842d AppKit`-[NSWindow _handleMouseDownEvent:isDelayedEvent:] + 6322\
+    frame #35: 0x00007fff957c9411 AppKit`-[NSWindow _reallySendEvent:isDelayedEvent:] + 212\
+    frame #36: 0x00007fff9520eb8d AppKit`-[NSWindow sendEvent:] + 517\
+    frame #37: 0x00007fff9518eb27 AppKit`-[NSApplication sendEvent:] + 2540\
+    frame #38: 0x00007fff94ff5d9a AppKit`-[NSApplication run] + 796\
+    frame #39: 0x00007fff94fbefbe AppKit`NSApplicationMain + 1176\
+  * frame #40: 0x0000000100001262 TableViewTokenCellTest`main(argc=3, argv=0x00007fff5fbff658) + 34 at main.m:12\
+    frame #41: 0x00007fff8ab755ad libdyld.dylib`start + 1\
+    frame #42: 0x00007fff8ab755ad libdyld.dylib`start + 1
+\f0\fs24 \CocoaLigature1 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+\cf0 \
+Desired outcome: NSTokenFieldCell is usable in a cell-bsed NSTableView, doesn't crash, and propagates value correctly through bindings.\
+}
